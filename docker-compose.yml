@@ -16,8 +16,6 @@ services:
       context: ./backend-register
     ports:
       - "8080:8080"
-    volumes:
-      - ./backend-register:/usr/src/app
     depends_on:
       - database
     environment:
