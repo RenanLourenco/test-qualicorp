@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./registers
+    ports:
+     - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - backend-network
+
+  backend:
+    build: 
+      context: ./backend-register
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./backend-register:/usr/src/app
+    depends_on:
+      - database
+    environment:
+      - JWT_SECRET=a684debdbf17be46561b7ab65182ddc98fbf88fe4d37011c626d6e4cfef937f6
+      - DB_URI=neo4j://database:7687
+      - DB_USERNAME=neo4j
+      - DB_PASSWORD=databaseconnectionpass
+    networks:
+      - backend-network
+
+
+  database:
+    image: neo4j:latest
+    environment:
+      NEO4J_AUTH: neo4j/databaseconnectionpass 
+    ports:
+      - "7474:7474"  
+      - "7687:7687"  
+    volumes:
+      - neo4j_data:/data  
+    networks:
+      - backend-network
+
+volumes:
+  neo4j_data:
+
+networks:
+  backend-network:
+    driver: bridge
